@@ -19,8 +19,6 @@ def main():
     except IndexError:
         update_id = None
 
-    logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-
     while True:
         try:
             echo(bot)
