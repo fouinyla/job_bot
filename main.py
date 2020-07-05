@@ -1,15 +1,21 @@
 import telegram
-import os
+from os import environ as env
 from telegram.error import NetworkError, Unauthorized
 from time import sleep
+from dotenv import load_dotenv, find_dotenv
+from constants import *
 
 update_id = None
 
 def main():
+    ENV_FILE = find_dotenv()
+    if(ENV_FILE):
+        load_dotenv(ENV_FILE)
+
     """Run the bot."""
     global update_id
     # Telegram Bot Authorization Token
-    bot = telegram.Bot(os.environ.get('BOT_TOKEN'))
+    bot = telegram.Bot(env.get(BOT_TOKEN))
 
     # get the first pending update_id, this is so we can skip over it in case
     # we get an "Unauthorized" exception.
