@@ -1,18 +1,17 @@
 # internal modules
 from os import environ as env
-from time import sleep
 
 # external modules
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 from dotenv import load_dotenv, find_dotenv
-from flask import Flask, request
+from flask import Flask
 
 # files
-from constants import *
-
+from telebot.constants import *
 
 # initialize server
-server = Flask(__name__)
+# server = Flask(__name__)
+
 
 
 
@@ -60,8 +59,9 @@ def main():
     # on noncommand i.e message - echo the message on Telegram
     dp.add_handler(MessageHandler(Filters.text, echo))
 
-    # Start the Bot
-    updater.start_polling()
+    # set webhook
+    updater.start_webhook(listen="0.0.0.0", port=int(env.get('PORT', '51637')), url_path=env.get(BOT_TOKEN))
+    updater.bot.setWebhook(f'{env.get(HEROKU_URL)}{env.get(BOT_TOKEN)}')
 
     # Run the bot until you press Ctrl-C or the process receives SIGINT,
     # SIGTERM or SIGABRT. This should be used most of the time, since
@@ -69,11 +69,26 @@ def main():
     updater.idle()
 
 
+'''
+@server.route('/{}'.format(BOT_TOKEN), methods=['POST'])
+def inbox():
+    update = Update.de_json(request.get_json(force=True), bot)
 
 
-@server.route("/")
-def webhook():
-    main()
+@server.route('/setwebhook', methods=['GET', 'POST'])
+def set_webhook():
+    webhook = updater.bot.setWebhook('{URL}{TOKEN}'.format(URL=HEROKU_URL, TOKEN=BOT_TOKEN))
+    if webhook:
+        return "webhook setup ok"
+    else:
+        return "webhook setup failed"
+
+@server.route('/')
+def index():
+    return '.'
+'''
+
 
 if __name__ == '__main__':
-    server.run(host="0.0.0.0", port=int(env.get('PORT', 5555)))
+    main()
+    #server.run(host="0.0.0.0", port=int(env.get('PORT', 5555)))
