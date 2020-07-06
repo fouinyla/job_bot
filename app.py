@@ -60,8 +60,8 @@ def main():
     dp.add_handler(MessageHandler(Filters.text, echo))
 
     # set webhook
-    #updater.start_webhook(listen="0.0.0.0", port=int(env.get('PORT', '5555')), url_path=env.get(BOT_TOKEN), webhook_url=f'{env.get(HEROKU_URL)}{env.get(BOT_TOKEN)}')
-    updater.bot.set_webhook(f'{env.get(HEROKU_URL)}{env.get(BOT_TOKEN)}')
+    updater.start_webhook(listen="0.0.0.0", port=int(env.get('PORT', '51637')), url_path=env.get(BOT_TOKEN))
+    updater.bot.setWebhook(f'{env.get(HEROKU_URL)}{env.get(BOT_TOKEN)}')
 
     # Run the bot until you press Ctrl-C or the process receives SIGINT,
     # SIGTERM or SIGABRT. This should be used most of the time, since
