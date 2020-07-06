@@ -48,8 +48,6 @@ def main():
     # Make sure to set use_context=True to use the new context based callbacks
     # Post version 12 this will no longer be necessary
     updater = Updater(env.get(BOT_TOKEN), use_context=True)
-    updater.start_webhook(listen="0.0.0.0", port=int(env.get('PORT', '5555')), url_path=env.get(BOT_TOKEN))
-    updater.bot.set_webhook(f'{env.get(HEROKU_URL)}{env.get(BOT_TOKEN)}')
 
     # Get the dispatcher to register handlers
     dp = updater.dispatcher
@@ -60,6 +58,10 @@ def main():
 
     # on noncommand i.e message - echo the message on Telegram
     dp.add_handler(MessageHandler(Filters.text, echo))
+
+    # set webhook
+    #updater.start_webhook(listen="0.0.0.0", port=int(env.get('PORT', '5555')), url_path=env.get(BOT_TOKEN), webhook_url=f'{env.get(HEROKU_URL)}{env.get(BOT_TOKEN)}')
+    updater.bot.set_webhook(f'{env.get(HEROKU_URL)}{env.get(BOT_TOKEN)}')
 
     # Run the bot until you press Ctrl-C or the process receives SIGINT,
     # SIGTERM or SIGABRT. This should be used most of the time, since
