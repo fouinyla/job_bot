@@ -25,7 +25,7 @@ def start(update, context):
 # First task: add /saymehi
 def saymehi(update, context):
     """Send a message when the command /saymehi is issued."""
-    update.message.reply_text('Hi, {0.first_name}!')
+    update.message.reply_text('Hi, user.first_name')
 
 def help_command(update, context):
     """Send a message when the command /help is issued."""
