@@ -5,14 +5,9 @@ import asyncio
 # external modules
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 from dotenv import load_dotenv, find_dotenv
-from flask import Flask
 
 # files
 from telebot.constants import *
-
-# initialize server
-#server = Flask(__name__)
-
 
 
 
@@ -70,27 +65,7 @@ def main():
     #updater.idle()
 
 
-'''
-@server.route('/{}'.format(BOT_TOKEN), methods=['POST'])
-def inbox():
-    update = Update.de_json(request.get_json(force=True), bot)
-
-
-@server.route('/setwebhook', methods=['GET', 'POST'])
-def set_webhook():
-    webhook = updater.bot.setWebhook('{URL}{TOKEN}'.format(URL=HEROKU_URL, TOKEN=BOT_TOKEN))
-    if webhook:
-        return "webhook setup ok"
-    else:
-        return "webhook setup failed"
-
-@server.route('/')
-def index():
-    return '.'
-'''
-
 
 if __name__ == '__main__':
     asyncio.set_event_loop(asyncio.SelectorEventLoop())
     main()
-    #server.run(host="0.0.0.0", port=int(env.get('PORT', 5000)))
