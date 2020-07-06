@@ -91,6 +91,6 @@ def index():
 
 
 if __name__ == '__main__':
-    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+    asyncio.set_event_loop(asyncio.SelectorEventLoop())
     main()
     #server.run(host="0.0.0.0", port=int(env.get('PORT', 5000)))
