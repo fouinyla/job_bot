@@ -1,5 +1,6 @@
 # internal modules
 from os import environ as env
+import asyncio
 
 # external modules
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
@@ -10,7 +11,7 @@ from flask import Flask
 from telebot.constants import *
 
 # initialize server
-server = Flask(__name__)
+#server = Flask(__name__)
 
 
 
@@ -60,13 +61,13 @@ def main():
     dp.add_handler(MessageHandler(Filters.text, echo))
 
     # set webhook
-    #updater.start_webhook(listen="0.0.0.0", port=int(env.get('PORT', '51637')), url_path=env.get(BOT_TOKEN))
-    updater.bot.setWebhook(f'{env.get(HEROKU_URL)}{env.get(BOT_TOKEN)}')
+    updater.start_webhook(listen="0.0.0.0", port=int(env.get('PORT', '51637')), url_path=env.get(BOT_TOKEN))
+    updater.bot.set_webhook(f'{env.get(HEROKU_URL)}{env.get(BOT_TOKEN)}')
 
     # Run the bot until you press Ctrl-C or the process receives SIGINT,
     # SIGTERM or SIGABRT. This should be used most of the time, since
     # start_polling() is non-blocking and will stop the bot gracefully.
-    updater.idle()
+    #updater.idle()
 
 
 '''
@@ -90,5 +91,6 @@ def index():
 
 
 if __name__ == '__main__':
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
     main()
-    server.run(host="0.0.0.0", port=int(env.get('PORT', 5000)))
+    #server.run(host="0.0.0.0", port=int(env.get('PORT', 5000)))
