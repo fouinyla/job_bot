@@ -26,7 +26,7 @@ def start(update, context):
 def saymehi(update, context):
     """Send a message when the command /saymehi is issued."""
     first_name = update.message.chat.first_name
-    update.message.reply_text('Hi, first_name : {}'. format(first_name))
+    update.message.reply_text('Hi, {}'. format(first_name))
 
 def help_command(update, context):
     """Send a message when the command /help is issued."""
