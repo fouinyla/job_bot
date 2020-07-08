@@ -10,7 +10,6 @@ from dotenv import load_dotenv, find_dotenv
 from telebot.constants import *
 
 
-
 # Enable logging
 # logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 # logger = logging.getLogger(__name__)
@@ -36,6 +35,7 @@ def help_command(update, context):
 def echo(update, context):
     """Echo the user message."""
     update.message.reply_text(update.message.text)
+    
 
 
 
@@ -63,7 +63,16 @@ def main():
 
     # set webhook
     updater.start_webhook(listen="0.0.0.0", port=int(env.get('PORT', '51637')), url_path=env.get(BOT_TOKEN))
-    updater.bot.set_webhook(f'{env.get(HEROKU_URL)}{env.get(BOT_TOKEN)}')
+
+    # check environment
+    url = None
+
+    if(env.get(ENV) == 'LOCAL'):
+        url = env.get(LOCAL_URL)
+    elif(env.get(ENV) == 'HEROKU'):
+        url = env.get(HEROKU_URL)
+    print(url)
+    updater.bot.set_webhook(f'{env.get(url)}{env.get(BOT_TOKEN)}')
 
     # Run the bot until you press Ctrl-C or the process receives SIGINT,
     # SIGTERM or SIGABRT. This should be used most of the time, since
@@ -73,5 +82,8 @@ def main():
 
 
 if __name__ == '__main__':
-    asyncio.set_event_loop(asyncio.SelectorEventLoop())
+    if (env.get(ENV) == 'LOCAL'):
+        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+    elif (env.get(ENV) == 'HEROKU'):
+        asyncio.set_event_loop(asyncio.SelectorEventLoop())
     main()
