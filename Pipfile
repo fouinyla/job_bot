@@ -8,6 +8,9 @@ verify_ssl = true
 [packages]
 python-telegram-bot = "*"
 python-dotenv = "*"
+pymongo = "*"
+dnspython = "*"
+sshtunnel = "*"
 
 [requires]
 python_version = "3.8"
