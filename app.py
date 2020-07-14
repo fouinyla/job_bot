@@ -10,7 +10,6 @@ from dotenv import load_dotenv, find_dotenv
 from telebot.constants import *
 
 
-
 # Enable logging
 # logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 # logger = logging.getLogger(__name__)
@@ -44,6 +43,11 @@ def main():
     if(ENV_FILE):
         load_dotenv(ENV_FILE)
 
+    if (env.get(ENV) == 'LOCAL'):
+        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+    elif (env.get(ENV) == 'HEROKU'):
+        asyncio.set_event_loop(asyncio.SelectorEventLoop())
+
     """Start the bot."""
     # Create the Updater and pass it your bot's token.
     # Make sure to set use_context=True to use the new context based callbacks
@@ -62,8 +66,17 @@ def main():
     dp.add_handler(MessageHandler(Filters.text, echo))
 
     # set webhook
-    updater.start_webhook(listen="0.0.0.0", port=int(env.get('PORT', '51637')), url_path=env.get(BOT_TOKEN))
-    updater.bot.set_webhook(f'{env.get(HEROKU_URL)}{env.get(BOT_TOKEN)}')
+    updater.start_webhook(listen=env.get(IP), port=env.get(PORT), url_path=env.get(BOT_TOKEN))
+
+    # check environment
+    url = None
+
+    if(env.get(ENV) == 'LOCAL'):
+        url = env.get(LOCAL_URL)
+    elif(env.get(ENV) == 'HEROKU'):
+        url = env.get(HEROKU_URL)
+    print(f'{url}{env.get(BOT_TOKEN)}')
+    updater.bot.set_webhook(f'{url}{env.get(BOT_TOKEN)}')
 
     # Run the bot until you press Ctrl-C or the process receives SIGINT,
     # SIGTERM or SIGABRT. This should be used most of the time, since
@@ -73,5 +86,4 @@ def main():
 
 
 if __name__ == '__main__':
-    asyncio.set_event_loop(asyncio.SelectorEventLoop())
     main()
