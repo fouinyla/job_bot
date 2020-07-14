@@ -8,6 +8,7 @@ from dotenv import load_dotenv, find_dotenv
 
 # files
 from telebot.constants import *
+from telebot.dbclient import DBClient
 
 
 # Enable logging
@@ -18,7 +19,18 @@ from telebot.constants import *
 # Define a few command handlers. These usually take the two arguments update and
 # context. Error handlers also receive the raised TelegramError object in error.
 def start(update, context):
+    db = DBClient(env.get(MONGODB_URL))
+    id = update.message.chat.id
+
+    if not db.find_user(id):
+        db.create_user(
+            id=id,
+            first_name=update.message.chat.first_name,
+            last_name=update.message.chat.last_name
+        )
+
     """Send a message when the command /start is issued."""
+    print(update)
     update.message.reply_text('Hi!')
 
 # First task: add /saymehi

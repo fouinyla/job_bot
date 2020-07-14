@@ -1,14 +1,23 @@
 import pymongo
 
-client = pymongo.MongoClient("mongodb+srv://ur-business-bot:Fiqm29frqKS@job-bot.5ex1b.mongodb.net/job_bot?retryWrites=true&w=majority")
-db = client.get_database('job_bot')
-users = db.users
 
-user = {
-    "name": "John",
-    "age": 55
-}
+class DBClient:
+    def __init__(self, mongodb_url):
+        client = pymongo.MongoClient(mongodb_url)
+        self.db = client.get_database('job_bot')
 
-inserted_id = users.insert_one(user).inserted_id
-print(users.count_documents({}))
-print(inserted_id)
+    def find_user(self, id):
+        users = self.db.users
+        user = users.find_one({
+            "id": id
+        })
+
+        return user is not None
+
+    def create_user(self, id, first_name, last_name):
+        users = self.db.users
+        users.insert_one({
+            "id": id,
+            "firstName": first_name,
+            "lastName": last_name
+        })
