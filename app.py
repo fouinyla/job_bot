@@ -55,9 +55,9 @@ def main():
     if(ENV_FILE):
         load_dotenv(ENV_FILE)
 
-    if (env.get(ENV) == 'LOCAL'):
+    if (env.get(ENV) == 'LOCAL_WIN'):
         asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-    elif (env.get(ENV) == 'HEROKU'):
+    elif (env.get(ENV) == 'HEROKU' or env.get(ENV) == 'LOCAL_MAC'):
         asyncio.set_event_loop(asyncio.SelectorEventLoop())
 
     """Start the bot."""
@@ -83,7 +83,7 @@ def main():
     # check environment
     url = None
 
-    if(env.get(ENV) == 'LOCAL'):
+    if(env.get(ENV) == 'LOCAL_WIN' or env.get(ENV) == 'LOCAL_MAC'):
         url = env.get(LOCAL_URL)
     elif(env.get(ENV) == 'HEROKU'):
         url = env.get(HEROKU_URL)
