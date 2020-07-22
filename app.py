@@ -8,7 +8,8 @@ from dotenv import load_dotenv, find_dotenv
 
 # files
 from telebot.constants import *
-from telebot.dbclient import DBClient
+from database.dbclient import DBClient
+from database.users import Users
 
 
 # Enable logging
@@ -19,11 +20,11 @@ from telebot.dbclient import DBClient
 # Define a few command handlers. These usually take the two arguments update and
 # context. Error handlers also receive the raised TelegramError object in error.
 def start(update, context):
-    db = DBClient(env.get(MONGODB_URL))
+    users = Users()
     id = update.message.chat.id
 
-    if not db.find_user(id):
-        db.create_user(
+    if not users.find_user(id):
+        users.create_user(
             id=id,
             first_name=update.message.chat.first_name,
             last_name=update.message.chat.last_name
@@ -33,11 +34,13 @@ def start(update, context):
     print(update)
     update.message.reply_text('Hi!')
 
+
 # First task: add /saymehi
 def saymehi(update, context):
     """Send a message when the command /saymehi is issued."""
     first_name = update.message.chat.first_name
-    update.message.reply_text('Hi, {}'. format(first_name))
+    update.message.reply_text('Hi, {}'.format(first_name))
+
 
 def help_command(update, context):
     """Send a message when the command /help is issued."""
@@ -49,10 +52,9 @@ def echo(update, context):
     update.message.reply_text(update.message.text)
 
 
-
 def main():
     ENV_FILE = find_dotenv()
-    if(ENV_FILE):
+    if (ENV_FILE):
         load_dotenv(ENV_FILE)
 
     if (env.get(ENV) == 'LOCAL_WIN'):
@@ -83,18 +85,18 @@ def main():
     # check environment
     url = None
 
-    if(env.get(ENV) == 'LOCAL_WIN' or env.get(ENV) == 'LOCAL_MAC'):
+    if (env.get(ENV) == 'LOCAL_WIN' or env.get(ENV) == 'LOCAL_MAC'):
         url = env.get(LOCAL_URL)
-    elif(env.get(ENV) == 'HEROKU'):
+    elif (env.get(ENV) == 'HEROKU'):
         url = env.get(HEROKU_URL)
     print(f'{url}{env.get(BOT_TOKEN)}')
     updater.bot.set_webhook(f'{url}{env.get(BOT_TOKEN)}')
 
-    # Run the bot until you press Ctrl-C or the process receives SIGINT,
-    # SIGTERM or SIGABRT. This should be used most of the time, since
-    # start_polling() is non-blocking and will stop the bot gracefully.
-    #updater.idle()
-
+    # connect to db
+    try:
+        DBClient().connect(env.get(MONGODB_URL))
+    except:
+        print("db is unvailable")
 
 
 if __name__ == '__main__':
